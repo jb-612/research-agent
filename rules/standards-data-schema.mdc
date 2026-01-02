@@ -1,0 +1,134 @@
+---
+description: Strict JSON Schemas and Data Models for all pipeline artifacts.
+globs: ["schemas/*.json", "src/models/*.py", "data/**/*.json"]
+---
+
+# Standards: Data Schemas & Models
+
+## 1. Objective
+To enforce strict structural contracts between Deterministic Code (Ingestion/Rendering) and Probabilistic Agents (LLMs). All JSON outputs must validate against these schemas before being processed by the next stage.
+
+## 2. Core Data Models
+
+### 2.1 Raw Item (`raw_item.schema.json`)
+Produced by: **Ingestion Layer**
+Consumed by: **ItemSummarizerAgent**
+
+```json
+{
+  "type": "object",
+  "required": ["id", "title", "url", "published_at", "type", "content", "source_id"],
+  "properties": {
+    "id": { "type": "string", "description": "Unique hash of the URL" },
+    "title": { "type": "string" },
+    "url": { "type": "string", "format": "uri" },
+    "published_at": { "type": "string", "format": "date-time" },
+    "type": { "type": "string", "enum": ["article", "video", "blog", "research", "opinion"] },
+    "source_id": { "type": "string", "description": "Key from sources.json" },
+    "source_type": { "type": "string", "enum": ["research", "news", "vendor", "indie"] },
+    "content": { "type": "string", "minLength": 100 },
+    "tags": { "type": "array", "items": { "type": "string" } }
+  }
+}
+```
+
+###2.2 Item Summary (item_summary.schema.json)
+Produced by: ItemSummarizerAgent Consumed by: NewsletterEditorAgent
+
+```json
+{
+  "type": "object",
+  "required": ["id", "summary", "safety_flag", "safety_comment"],
+  "properties": {
+    "id": { "type": "string" },
+    "summary": { 
+      "type": "string", 
+      "maxLength": 600, 
+      "description": "Concise summary approx 80 words." 
+    },
+    "topics": { 
+      "type": "array", 
+      "items": { "type": "string" },
+      "description": "Populated by TopicClassifierAgent"
+    },
+    "safety_flag": { "type": "boolean" },
+    "safety_comment": { "type": "string" }
+  }
+}
+```
+### 2.3 Newsletter Spec (newsletter_spec.schema.json)
+Produced by: NewsletterEditorAgent Consumed by: Renderer, Critics
+
+```json
+{
+  "type": "object",
+  "required": ["week_label", "intro", "sections", "closing_note"],
+  "properties": {
+    "week_label": { "type": "string" },
+    "intro": { "type": "string" },
+    "sections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "items"],
+        "properties": {
+          "name": { "type": "string" },
+          "items": {
+            "type": "array",
+            "items": { "$ref": "#/definitions/ItemSummary" }
+          }
+        }
+      }
+    },
+    "closing_note": { "type": "string" }
+  }
+}
+```
+## 3. Governance Models
+###3.1 Critic Report (critic_report.schema.json)
+Produced by: Critic Agents
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "factual": {
+      "has_unsupported_claims": { "type": "boolean" },
+      "unsupported_claims": { "type": "array", "items": { "type": "string" } }
+    },
+    "tone_safety": {
+      "tone_ok": { "type": "boolean" },
+      "safety_ok": { "type": "boolean" },
+      "issues": { "type": "array", "items": { "type": "string" } }
+    },
+    "privacy": {
+      "privacy_ok": { "type": "boolean" },
+      "flagged_segments": { "type": "array", "items": { "type": "string" } }
+    }
+  }
+}
+```
+## 4. Operational Models
+### 4.1 Run Metrics (run_metrics.schema.json)
+Produced by: Pipeline Runner
+
+```json
+{
+  "type": "object",
+  "required": ["status", "items_ingested", "items_published"],
+  "properties": {
+    "week_label": { "type": "string" },
+    "status": { "type": "string", "enum": ["SUCCESS", "FAILED", "PARTIAL"] },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "items_ingested": { "type": "integer" },
+    "items_summarized": { "type": "integer" },
+    "items_published": { "type": "integer" },
+    "errors": { "type": "array", "items": { "type": "string" } }
+  }
+}
+```
+
+## 5. Validation Rules
+Strict Mode: All LLM outputs must be validated against these schemas using a library like jsonschema.
+
+Fail-Fast: If an agent produces invalid JSON that cannot be parsed, the item is marked as FAILED_SCHEMA and excluded. Do not attempt to "guess" the structure.

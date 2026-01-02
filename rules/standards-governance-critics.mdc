@@ -1,0 +1,71 @@
+---
+description: Standards for Governance, Critic Agents, and Human-in-the-Loop (HITL) workflows.
+globs: ["src/critics/*.py", "src/workflows/*.py", "config/environments/*.yaml"]
+---
+
+# Standards: Governance & Critics
+
+## 1. Objective
+To ensure non-deterministic LLM outputs remain safe, factual, and aligned with brand guidelines by implementing a "Second Pair of Eyes" (Critic Layer) and enforcing Human-in-the-Loop (HITL) gates based on the deployment environment.
+
+## 2. Critic Agents (The "Second Pair of Eyes")
+Critics are specialized agents that review artifacts *after* generation but *before* finalization. They do not generate content; they validate it.
+
+### 2.1 Factual Consistency Critic
+* **Role:** Compare the `RawItem.content` (source) against the `ItemSummary.summary`.
+* **Prompt Source:** `prompts/critics/factual_consistency_critic.txt`.
+* **Pass Condition:** `has_unsupported_claims` must be `false`.
+* **Failure Action:** If true, the item is flagged `REVIEW_REQUIRED`. If the error is severe (hallucination), the item is **rejected** from the newsletter.
+
+### 2.2 Tone & Safety Critic
+* **Role:** Scan summaries and the final newsletter intro/closing for violations.
+* **Prompt Source:** `prompts/critics/tone_safety_critic.txt`.
+* **Checks:**
+    * **Safety:** Hate speech, dangerous content, PII (Personally Identifiable Information).
+    * **Tone:** "Marketing hype" ("Revolutionary", "Game-changing"), slang, or non-neutral phrasing.
+* **Failure Action:**
+    * **Safety Violation:** IMMEDIATE REJECTION (`BLOCK_SEND`).
+    * **Tone Violation:** Flag for `rewrite` or `human_review`.
+
+### 2.3 Privacy Critic
+* **Role:** Detect mentions of private individuals or sensitive personal data.
+* **Prompt Source:** `prompts/critics/privacy_critic.txt`.
+* **Rule:** Only public figures (CEOs, Researchers) and authors may be named. No private addresses or health data.
+
+## 3. Workflow Gates (Alpha/Beta/Prod)
+The system behavior changes based on the `ENVIRONMENT` config variable.
+
+### 3.1 Alpha Mode (Full HITL)
+* **Gate:** **No email is sent automatically.**
+* **Process:**
+    1.  Pipeline runs to completion (Ingest -> Summarize -> Edit -> Critics).
+    2.  `AlphaWorkflowCoordinator` compiles a "Preflight Report" comparing Auto vs. Critic flags.
+    3.  Output is saved to `drafts/{week}/newsletter_draft.json`.
+    4.  Human Editor manually reviews/edits the JSON.
+    5.  Trigger `send_newsletter.py` manually after approval.
+
+### 3.2 Beta Mode (Exception-Based HITL)
+* **Gate:** Automated sending is allowed **ONLY IF** no critical flags exist.
+* **Process:**
+    1.  Critics run on all items.
+    2.  **BetaWorkflowCoordinator** logic:
+        * If `Safety_Flags == 0` AND `Factual_Errors == 0`: **Auto-Send**.
+        * If flags exist: Pause and alert Editor via Slack/Email.
+    3.  Editor reviews *only* the flagged items and the "Top 3" stories.
+
+### 3.3 Prod Mode (Automated with Audits)
+* **Gate:** High-confidence automation.
+* **Process:**
+    1.  Auto-sanitize minor tone issues (e.g., strip "revolutionary").
+    2.  Reject items with factual/safety errors automatically and replace them with backups.
+    3.  Send.
+    4.  **Post-Run Audit:** `NewsletterQualityRater` runs asynchronously to grade the issue (1-5 scale) for retrospective dashboarding.
+
+## 4. Critic Logic & Thresholds
+* **Hyped Content:** If > 3 items are flagged as "Hyped", the `NewsletterEditorAgent` must be re-run with a stricter "Anti-Hype" instruction.
+* **Source Diversity:** If > 50% of items come from a single `source_id`, the `BiasAndDiversityAuditor` must flag the run as `UNBALANCED`.
+
+## 5. Output Artifacts
+Governance runs produce specific JSON artifacts for traceability:
+* `data/{week}/critics.json`: Detailed logs of every check.
+* `data/{week}/run_report.md`: A summary for the human operator (Items Ingested, Flags Raised, Sent Status).

@@ -1,0 +1,76 @@
+---
+description: Master workflow and global constraints for the "Last Week in AI" newsletter agent.
+globs: ["*.py", "scripts/*", "README.md"]
+---
+
+# Project: Last Week in AI — Master Workflow
+
+## 1. Project Context
+This project is an automated agentic system that monitors AI sources, synthesizes a weekly newsletter, and delivers it via email. It strictly separates **Deterministic Ingestion** from **Probabilistic Summarization/Curation**.
+
+### Core Philosophy
+1.  **Determinism First:** Ingestion and Rendering must be deterministic.
+2.  **Governed Creativity:** LLM agents (Summarizer, Editor) are creative but constrained by strict JSON Schemas and Critic Agents.
+3.  **Safety Above All:** No content violates the Safety Principles (Privacy, Harm, Hate).
+
+## 2. The 6-Stage Pipeline
+The agent must adhere to this execution flow. Do not skip steps.
+
+### Stage 1: Ingestion (Deterministic)
+* **Input:** `config/sources.json`
+* **Action:** Fetch RSS, Scrape Web, Retrieve YouTube Transcripts.
+* **Filter:** "Last 7 Days" window, Language (English), Deduplication.
+* **Output:** `data/{week}/raw_items.json`
+* **Rule:** No LLM usage here. Pure Python/Requests.
+
+### Stage 2: Summarization & Classification (Agentic)
+* **Input:** `raw_items.json`
+* **Action:** * **ItemSummarizerAgent:** Generates factual summaries.
+    * **TopicClassifierAgent:** Tags items (e.g., "LLMs", "Robotics").
+* **Output:** `data/{week}/summaries.json`
+* **Rule:** Must use `prompts/item_summarizer.md` and validate against `schemas/item_summary.schema.json`.
+
+### Stage 3: Curation & Editing (Agentic)
+* **Input:** `summaries.json`
+* **Action:** * **NewsletterEditorAgent:** Selects top items, writes Intro/Closing, groups into Sections.
+* **Output:** `data/{week}/newsletter_spec.json`
+* **Rule:** Max items per issue is strict (default: 12).
+
+### Stage 4: Governance & Critics (Agentic + Logic)
+* **Input:** `newsletter_spec.json`
+* **Action:** * Run **Critic Agents** (Factuality, Tone, Privacy).
+    * **Alpha/Beta Gate:** If in Alpha mode, pause for manual review.
+* **Output:** `data/{week}/critics.json`, `data/{week}/newsletter_spec_final.json`
+
+### Stage 5: Rendering (Deterministic)
+* **Input:** `newsletter_spec_final.json`
+* **Action:** Jinja2 templating.
+* **Output:** `dist/newsletter.html`, `dist/newsletter.txt`
+
+### Stage 6: Delivery (Operational)
+* **Input:** `dist/*`, `config/subscribers.json`
+* **Action:** SMTP Send.
+* **Output:** `data/{week}/run_metrics.json`
+
+## 3. Global Prime Directives
+All agents and code must obey these directives:
+
+### A. Safety & Ethics
+> "Prioritize user safety. Do not promote self-harm, hate, violence, or illegal activity."
+* If an item is flagged `safety_flag: true` during summarization, it **must** be excluded from the final newsletter.
+
+### B. Tone & Style
+> "Concise, neutral, factual, no marketing hype."
+* Avoid superlatives ("revolutionary", "game-changing") unless quoting a source.
+* Distinguish facts from opinions ("The author argues...").
+
+### C. Bias Avoidance
+* **Vendor Neutrality:** Do not over-represent a single company (e.g., OpenAI/Google) in the top stories unless factually unavoidable.
+* **Topic Diversity:** Ensure at least 3 distinct topics are covered per issue.
+
+## 4. Technical Constraints
+* **Language:** Python 3.10+
+* **LLM Provider:** Gemini (via Google GenAI SDK).
+* **Storage:** Flat file JSON (for v1).
+* **Templating:** Jinja2.
+* **Testing:** Pytest (Unit) + Behave (BDD).

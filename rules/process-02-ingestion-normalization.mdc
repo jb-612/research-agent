@@ -1,0 +1,55 @@
+---
+description: Rules for the deterministic ingestion, cleaning, and normalization of source content.
+globs: ["src/ingest/*.py", "config/sources.json", "data/**/*.json"]
+---
+
+# Process: Ingestion & Normalization
+
+## 1. Objective
+To fetch, clean, and normalize content from diverse sources (RSS, Web, YouTube) into a unified JSON format (`RawItem`) without using LLMs. This process must be **deterministic** and **idempotent**.
+
+## 2. Source Configuration (`sources.json`)
+The system must read from `config/sources.json`.
+* **Structure:**
+    ```json
+    {
+      "rss_feeds": [ "url1", "url2" ],
+      "websites": [ { "url": "...", "selector": "main" } ],
+      "youtube_channels": [ "channel_id_1" ]
+    }
+    ```
+* **Validation:** Fail fast if the file is missing or invalid JSON.
+
+## 3. Ingestion Rules (Feature F2)
+
+### 3.1 RSS Feeds (User Story F2.1)
+* **Fetcher:** Use `feedparser` or equivalent.
+* **Time Window:** STRICTLY filter items where `published_at` is within the last 7 days (or configured `week_start` / `week_end`).
+* **Data Mapping:** Map RSS `<description>` or `<content:encoded>` to `content`.
+
+### 3.2 Website Articles (User Story F2.2)
+* **Fetcher:** Use `requests` + `BeautifulSoup` (or `trafilatura`/`newspaper3k`).
+* **Cleaning:** Remove navigation, footers, ads, and scripts. Keep only the main article body text.
+* **Constraint:** If extraction fails or content length < 300 chars, discard the item.
+
+### 3.3 YouTube Transcripts (User Story F2.3)
+* **Fetcher:** Use `youtube_transcript_api`.
+* **Logic:**
+    * If transcript exists: Fetch text, set `type="video"`.
+    * If no transcript: Log warning, mark as `transcript_missing`, and exclude from main flow.
+
+## 4. Normalization & Output
+All ingested content must be converted to the **RawItem** format and saved to `data/{week}/raw_items.json`.
+
+### 4.1 RawItem Schema
+```json
+{
+  "id": "string (unique hash of url)",
+  "title": "string",
+  "url": "string",
+  "published_at": "ISO 8601 string",
+  "type": "article | video | blog | research",
+  "content": "string (cleaned text)",
+  "source_id": "string (from config)",
+  "source_type": "research | news | vendor | indie"
+}
