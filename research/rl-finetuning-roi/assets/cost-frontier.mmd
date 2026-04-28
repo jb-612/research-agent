@@ -1,0 +1,25 @@
+flowchart TB
+    subgraph Frontier ["Cost-Performance Frontier — Mid-2025"]
+        direction TB
+        Inaccessible[Frontier-scale RL<br/>671B+ MoE<br/>millions H800-hours<br/>DeepSeek R1, OpenAI o-series<br/>AIME24 75–80%+]
+        S1[s1 SFT-distillation<br/>32B + budget forcing<br/>1,000 traces<br/>32 H100-hours<br/>~$25–$1,250<br/>AIME24 50–70%]
+        SkywR1[Skywork-OR1 pattern<br/>SFT-distill + GRPO<br/>32B<br/>+$2.5–12.5K<br/>AIME24 70–82%]
+        ARTE[OpenPipe ART-E<br/>14B Qwen2.5<br/>GRPO + RULER<br/><$80 training<br/>email search 96%<br/>5× faster, 64× cheaper than o3]
+        SmallRL[Pure RL at 7B<br/>community replications<br/>+2–5pp typical<br/>not competitive]
+        RFT[Commercial RFT<br/>OpenAI o4-mini<br/>$100/hr<br/>narrow verifiable tasks<br/>defensible niche]
+    end
+
+    Buyer([Operator deciding<br/>where to invest]) --> Choose{Choose strategy}
+    Choose --> Inaccessible
+    Choose --> S1
+    Choose --> SkywR1
+    Choose --> ARTE
+    Choose --> SmallRL
+    Choose --> RFT
+
+    style Inaccessible fill:#fcc,stroke:#900
+    style S1 fill:#9f9,stroke:#393
+    style SkywR1 fill:#9f9,stroke:#393
+    style ARTE fill:#9f9,stroke:#393
+    style SmallRL fill:#fcc,stroke:#900
+    style RFT fill:#ffc,stroke:#960

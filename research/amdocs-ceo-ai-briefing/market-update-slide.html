@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>AI Market Update — April 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --paper:       #F4ECE0;
+    --paper-deep:  #EAE0D0;
+    --paper-soft:  #FAF4EB;
+    --paper-ink:   #E0D4C0;
+    --ink:         #2B211A;
+    --ink-90:      rgba(43, 33, 26, 0.90);
+    --ink-60:      rgba(43, 33, 26, 0.60);
+    --ink-40:      rgba(43, 33, 26, 0.40);
+    --ink-12:      rgba(43, 33, 26, 0.12);
+    --ink-06:      rgba(43, 33, 26, 0.06);
+    --clay:        #C35A3A;
+    --clay-deep:   #A64828;
+    --clay-soft:   #E8A88F;
+    --clay-wash:   #F6E0D4;
+    --ochre:       #C98B3A;
+    --sage:        #7B8A6F;
+    --olive-deep:  #4F5A3E;
+    --font-display: 'Newsreader', 'Iowan Old Style', Cambria, Georgia, serif;
+    --font-body:    'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-mono:    'JetBrains Mono', 'SF Mono', Consolas, monospace;
+  }
+
+  @page {
+    size: A4 landscape;
+    margin: 0;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-body);
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .sheet {
+    width: 297mm;
+    height: 210mm;
+    background: var(--paper);
+    padding: 7mm 10mm 6mm 10mm;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ===== Title bar ===== */
+  .title-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    border-bottom: 1.5pt solid var(--ink);
+    padding-bottom: 2.5mm;
+    margin-bottom: 2.5mm;
+    flex-shrink: 0;
+  }
+  .title-bar h1 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 500;
+    font-size: 24pt;
+    line-height: 1;
+    letter-spacing: -0.5px;
+    color: var(--ink);
+  }
+  .title-bar h1 .accent { color: var(--clay); }
+  .title-bar h1 .dot {
+    display: inline-block;
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--clay);
+    margin: 0 6px 4px 6px;
+    vertical-align: middle;
+  }
+  .title-bar .meta {
+    text-align: right;
+    font-family: var(--font-mono);
+    font-size: 7pt;
+    line-height: 1.6;
+    color: var(--ink-60);
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+  }
+  .title-bar .meta .scope {
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  /* ===== Subhead ribbon ===== */
+  .subhead {
+    font-family: var(--font-display);
+    font-size: 10pt;
+    font-style: italic;
+    color: var(--ink-90);
+    margin: 0 0 2.5mm 0;
+    line-height: 1.3;
+    max-width: 240mm;
+    flex-shrink: 0;
+  }
+  .subhead .lede {
+    font-style: normal;
+    font-weight: 600;
+    color: var(--clay-deep);
+    font-family: var(--font-body);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 8pt;
+    margin-right: 6px;
+  }
+
+  /* ===== Grid of cards ===== */
+  .grid {
+    display: grid;
+    grid-template-columns: 1.05fr 1fr 1fr 1.15fr;
+    grid-template-rows: 1fr 1.05fr;
+    gap: 2.2mm;
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  .card {
+    background: var(--paper-soft);
+    border: 0.5pt solid var(--ink-12);
+    border-top: 1.5pt solid var(--clay);
+    padding: 2.2mm 2.6mm;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .card.featured {
+    background: #FFF8EE;
+    border-top: 1.5pt solid var(--clay-deep);
+    grid-column: span 2;
+  }
+  .card.standards {
+    border-top-color: var(--olive-deep);
+  }
+  .card.regulation {
+    border-top-color: var(--ochre);
+  }
+
+  .card h2 {
+    margin: 0 0 1.4mm 0;
+    font-family: var(--font-mono);
+    font-size: 6.4pt;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink);
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 6px;
+    border-bottom: 0.5pt dotted var(--ink-40);
+    padding-bottom: 1mm;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .card h2 .title-text {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .card h2 .badge {
+    flex: 0 0 auto;
+    font-family: var(--font-body);
+    font-size: 5.6pt;
+    font-weight: 700;
+    background: var(--clay);
+    color: var(--paper-soft);
+    padding: 1px 4px;
+    border-radius: 2px;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+  }
+  .card.standards h2 .badge { background: var(--olive-deep); }
+  .card.regulation h2 .badge { background: var(--ochre); }
+
+  .card ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    flex: 1;
+    overflow: hidden;
+  }
+  .card li {
+    font-size: 6.6pt;
+    line-height: 1.24;
+    margin-bottom: 0.9mm;
+    padding-left: 0;
+    color: var(--ink);
+  }
+  .card li .date {
+    font-family: var(--font-mono);
+    font-size: 6pt;
+    color: var(--clay);
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    display: inline;
+    margin-right: 3px;
+    white-space: nowrap;
+  }
+  .card li strong {
+    color: var(--ink);
+    font-weight: 700;
+  }
+  .card li em {
+    color: var(--ink-60);
+    font-style: italic;
+  }
+  .card.featured li { font-size: 6.7pt; }
+
+  /* ===== Footer strip ===== */
+  .footer-strip {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 0.5pt solid var(--ink-12);
+    padding-top: 1.4mm;
+    margin-top: 2mm;
+    flex-shrink: 0;
+    font-family: var(--font-mono);
+    font-size: 6pt;
+    color: var(--ink-60);
+    letter-spacing: 0.06em;
+  }
+  .footer-strip .left {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+  }
+  .footer-strip .left .pill {
+    background: var(--paper-deep);
+    color: var(--ink);
+    padding: 1px 6px;
+    border-radius: 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 500;
+  }
+  .footer-strip .right {
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+  }
+
+  /* ===== Subtle decorative grain ===== */
+  .grain {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(circle at 0% 0%, rgba(195,90,58,0.04) 0, transparent 22%),
+      radial-gradient(circle at 100% 100%, rgba(195,90,58,0.03) 0, transparent 18%);
+  }
+</style>
+</head>
+<body>
+<section class="sheet">
+  <div class="grain"></div>
+
+  <header class="title-bar">
+    <h1>
+      <span class="accent">AI</span> Market Update
+      <span class="dot"></span>
+      <span style="font-style: normal; font-family: var(--font-mono); font-size: 13pt; font-weight: 500; color: var(--ink-90); letter-spacing: 0.04em;">Q1 / April 2026</span>
+    </h1>
+    <div class="meta">
+      <div class="scope">News digest · 96 sources</div>
+      <div>Window: Jan – 27 Apr 2026</div>
+      <div>Audience · CEO briefing</div>
+    </div>
+  </header>
+
+  <p class="subhead">
+    <span class="lede">This quarter</span>
+    Frontier-model cadence accelerates, <strong>Salesforce TDX 2026</strong> reshapes the agent platform race, the <strong>Microsoft–OpenAI partnership amends</strong> (Apr 27), and telco operators turn MWC announcements into <strong>production deployments</strong> with hyperscalers.
+  </p>
+
+  <div class="grid">
+
+    <!-- Top stories — last 30 days (spans full row 1, col 1) -->
+    <article class="card">
+      <h2><span class="title-text">Top stories — last 30 days</span> <span class="badge">FRESH</span></h2>
+      <ul>
+        <li><span class="date">27 Apr</span> <strong>Microsoft–OpenAI partnership amended</strong>: OpenAI free to multi-cloud; MSFT loses revenue share; caps to 2030.</li>
+        <li><span class="date">24 Apr</span> <strong>Cohere acquires Aleph Alpha</strong> ~$20B; Schwarz €500M; CA + DE backed.</li>
+        <li><span class="date">23 Apr</span> <strong>OpenAI GPT-5.5 / 5.5 Pro</strong> across all ChatGPT tiers + API.</li>
+        <li><span class="date">23 Apr</span> <strong>Claude Managed Agents persistent memory</strong> beta — Netflix, Rakuten early adopters.</li>
+        <li><span class="date">22 Apr</span> <strong>MSFT Copilot Agent Mode GA</strong> — Word / Excel / PPT.</li>
+        <li><span class="date">22 Apr</span> <strong>AWS Bedrock AgentCore</strong> ships Managed Harness, CLI, Skills.</li>
+        <li><span class="date">16 Apr</span> <strong>Claude Opus 4.7 GA</strong>; Anthropic concedes 4.7 still trails unreleased Mythos.</li>
+        <li><span class="date">15 Apr</span> <strong>Salesforce TDX 2026</strong> — Headless 360, Agent Fabric, Vibes 2.0.</li>
+        <li><span class="date">9 Apr</span> <strong>A2A Protocol v1.0 GA</strong> under LF AAIF; 150+ orgs in production.</li>
+      </ul>
+    </article>
+
+    <!-- Models -->
+    <article class="card">
+      <h2><span class="title-text">Models &amp; capabilities</span> <span class="badge">RELEASES</span></h2>
+      <ul>
+        <li><span class="date">23 Apr</span> <strong>GPT-5.5 + 5.5 Pro</strong> — full ChatGPT rollout + API.</li>
+        <li><span class="date">16 Apr</span> <strong>Claude Opus 4.7 GA</strong> at same price as 4.6.</li>
+        <li><span class="date">8 Apr</span> <strong>Claude Mythos Preview</strong> (Bedrock + Vertex) for partners.</li>
+        <li><span class="date">24 Apr</span> <strong>DeepSeek V4</strong> — 1.6T MoE / 49B active, 1M context.</li>
+        <li><span class="date">20 Apr</span> <strong>Kimi K2.6</strong> — first open-weight to beat GPT-5.4 on SWE-Bench Pro.</li>
+        <li><span class="date">7 Apr</span> <strong>GLM-5.1</strong> — first OSS to top SWE-Bench Pro (58.4).</li>
+        <li><span class="date">Q1</span> <strong>Gemini 3</strong> family (3 Flash, 3 Pro, 3.1 Pro); Project Mariner Computer Use.</li>
+        <li><span class="date">Q1</span> <strong>Apple iOS 26.4</strong>; <em>Siri / next-gen AFM deferred to iOS 27</em>.</li>
+      </ul>
+    </article>
+
+    <!-- Vendor moves -->
+    <article class="card">
+      <h2><span class="title-text">Vendor moves &amp; reactions</span> <span class="badge">PLATFORMS</span></h2>
+      <ul>
+        <li><span class="date">15 Apr</span> <strong>Salesforce TDX 2026</strong>: Headless 360 (60+ MCP tools), Agent Fabric, Vibes 2.0 (Sonnet + GPT-5, ~40% cycle-time cut).</li>
+        <li><span class="date">2 Mar</span> <strong>SF Agentforce for Communications</strong> — 5 telco-tuned agents; Lumen reference customer.</li>
+        <li><span class="date">Q1</span> <strong>SF enters ITSM</strong> — direct ServiceNow attack.</li>
+        <li><span class="date">Q1</span> <strong>ServiceNow AI Control Tower</strong> — ~$9B in acquisitions in 6 weeks (counter).</li>
+        <li><span class="date">Q1</span> <strong>SAP Joule Studio GA</strong> + 40 agents + 2,400 Skills.</li>
+        <li><span class="date">22 Apr</span> <strong>MSFT Copilot Agent Mode GA</strong>; E7 Cowork GA <strong>1 May</strong> @ $99/user.</li>
+        <li><span class="date">2 Mar</span> <strong>Claude Memory free</strong> + import from ChatGPT / Gemini / Grok.</li>
+        <li><span class="date">Apr</span> <strong>Google Cloud Next 26</strong>: Gemini Enterprise Agent Platform; $750M Partner Fund.</li>
+      </ul>
+    </article>
+
+    <!-- Deals & M&A -->
+    <article class="card">
+      <h2><span class="title-text">Deals &amp; M&amp;A</span> <span class="badge">CAPITAL</span></h2>
+      <ul>
+        <li><span class="date">27 Apr</span> <strong>MSFT ↔ OpenAI</strong> partnership amended; OpenAI multi-cloud free; revenue caps to 2030.</li>
+        <li><span class="date">24 Apr</span> <strong>Cohere ↔ Aleph Alpha</strong> ~$20B; Schwarz €500M; pending DE / EU clearance.</li>
+        <li><span class="date">Apr</span> <strong>xAI ↔ Anysphere/Cursor</strong> — right to acquire $60B (or $10B work-payment).</li>
+        <li><span class="date">Feb</span> <strong>Anthropic Series G $30B</strong> at ~$380B post-money (GIC, Coatue).</li>
+        <li><span class="date">Feb</span> <strong>OpenAI extends megaround</strong> +$10B → ~$120B.</li>
+        <li><span class="date">Feb</span> <strong>KKR + Singtel</strong> acquire 82% of STT GDC for ~US$5.1B.</li>
+        <li><span class="date">2 Jan</span> <strong>Qvantel completes Optiva acquisition</strong> — 70+ telcos; 4 wins in 3 months.</li>
+        <li><span class="date">29 Oct '25</span> <strong>NEC ↔ CSG</strong> ~$2.9B; Netcracker + CSG vs Amdocs.</li>
+      </ul>
+    </article>
+
+    <!-- TELCO CUSTOMER ANNOUNCEMENTS — featured (spans 2 cols) -->
+    <article class="card featured">
+      <h2><span class="title-text">Telco operator AI moves</span> <span class="badge">OUR INDUSTRY</span></h2>
+      <ul>
+        <li><span class="date">MWC 26</span> <strong>Verizon</strong> agentic + GenAI overhaul; joint Amdocs session on AI-driven network slicing.</li>
+        <li><span class="date">MWC 26</span> <strong>AT&amp;T</strong> launches first standardised US 5G network APIs via Aduna; new T-Life consumer app.</li>
+        <li><span class="date">MWC 26</span> <strong>T-Mobile</strong> AI-based SON tools handled Winter Storm Fern; T-Life ~34M households.</li>
+        <li><span class="date">MWC 26</span> <strong>DT + Orange + Telefónica + TIM + Vodafone</strong> — first live Pan-European Federated Edge Continuum.</li>
+        <li><span class="date">MWC 26</span> <strong>Vodafone + Amazon Project Kuiper</strong>: LEO-satellite 4G/5G augmentation EU + Africa.</li>
+        <li><span class="date">MWC 26</span> <strong>MTN + Huawei "Agentic Networks"</strong>; closed-loop optimisation; SA Tech Innovation Lab.</li>
+        <li><span class="date">MWC 26</span> <strong>GSMA Open Telco AI</strong> launched (with AT&amp;T, AMD) — industry-wide telecom-AI benchmarking.</li>
+        <li><span class="date">MWC 26</span> <strong>Lumen on Salesforce Agentforce</strong>: $5.6M saved year one; 300+ hrs/week productivity.</li>
+        <li><span class="date">MWC 26</span> <strong>Qualcomm 6G Coalition</strong> w/ KDDI, NTT DOCOMO, Reliance Jio — roadmap to 2029.</li>
+        <li><span class="date">23 Apr</span> <strong>BT + Nscale + NVIDIA</strong> sovereign AI — 14 MW datacentre across 3 BT sites; <strong>"UK's first complete sovereign telecom services"</strong>.</li>
+        <li><span class="date">Feb</span> <strong>Reliance Jio commits $110B</strong> to AI infra; 120+ MW datacentres at Jamnagar H2 2026.</li>
+        <li><span class="date">Apr</span> <strong>Vodafone deploys Gemini Enterprise agents</strong> (Cloud Next); also Mas Orange, DT, One NZ.</li>
+        <li><span class="date">Q1</span> <strong>Bell Canada rolls out Cohere "North"</strong>; 100+ use cases; targets <strong>$2B AI revenue by 2028</strong>.</li>
+        <li><span class="date">Q1</span> <strong>Optus</strong> YesGPT on Claude; <strong>+ Perplexity Pro</strong> free 12mo to 6M consumer + SMB customers.</li>
+        <li><span class="date">Q1</span> <strong>Vodafone–Microsoft 10-yr / $1.5B</strong> cloud + customer-AI deal anchors Vodafone overhaul.</li>
+      </ul>
+    </article>
+
+    <!-- Telco vendor moves + standards (spans 2 cols) -->
+    <article class="card standards">
+      <h2><span class="title-text">Telco vendors &amp; standards</span> <span class="badge">BSS / OSS</span></h2>
+      <ul>
+        <li><span class="date">27 Feb</span> <strong>Amdocs unveils CES26</strong> — agent-driven BSS-OSS-Network suite, powered by aOS Cognitive Core.</li>
+        <li><span class="date">27 Feb</span> <strong>Amdocs + Microsoft</strong> at MWC: aOS Agentic Services on Foundry, Azure OpenAI, Copilot, Fabric IQ — "Service-as-Software".</li>
+        <li><span class="date">17–20 Feb</span> <strong>Ericsson + AWS</strong> launch Agentic rApp as a Service on AWS Marketplace; Telco Agentic AI Studio uses Bedrock AgentCore, Kiro, Amazon Q.</li>
+        <li><span class="date">22 Feb</span> <strong>Ericsson + Mistral AI</strong> partnership on AI-native 6G-era networks.</li>
+        <li><span class="date">14–21 Apr</span> <strong>Netcracker</strong> showcases autonomous-operations cases at FutureNet World 2026.</li>
+        <li><span class="date">9 Apr</span> <strong>A2A Protocol v1.0 GA</strong> (LF AAIF); 150+ orgs; signed Agent Cards + multi-tenancy.</li>
+        <li><span class="date">2–3 Apr</span> <strong>AAIF MCP Dev Summit NA</strong> (NYC): SEP-1442 stateless transport, MCP Apps spec, SEP-1686 durable tasks.</li>
+      </ul>
+    </article>
+
+  </div>
+
+  <footer class="footer-strip">
+    <div class="left">
+      <span class="pill">Apr 27 2026</span>
+      <span>Companion docs: <strong style="color: var(--ink); letter-spacing: 0.04em; text-transform: none;">market-update-apr2026.md</strong> · executive-brief.md · full-research.md</span>
+    </div>
+    <div class="right">All sources cited — see digest</div>
+  </footer>
+
+</section>
+</body>
+</html>

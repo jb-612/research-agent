@@ -1,0 +1,26 @@
+flowchart TD
+    Start([Operator considers proprietary RL fine-tune]) --> Q1{1. Workload narrow enough<br/>for 7B–32B specialist<br/>to dominate?}
+    Q1 -- No --> API[/Use frontier API/]
+    Q1 -- Yes --> Q2{2. Reward signal<br/>verifiable OR LLM-judge<br/>with reliability controls?}
+    Q2 -- No --> API
+    Q2 -- Yes --> Q3{3. Sustained monthly volume<br/>≥ 50M tokens vs premium APIs<br/>OR ≥ 500M vs mid-tier?}
+    Q3 -- No --> API
+    Q3 -- Yes --> Q4{4. Workflow stays in scope<br/>≥ 12 months?}
+    Q4 -- No --> API_Plus[/Frontier API +<br/>prompt engineering/]
+    Q4 -- Yes --> Q5{5. Can run production<br/>self-hosted inference stack<br/>vLLM / SGLang / multi-LoRA?}
+    Q5 -- No --> Managed[/Managed inference platform<br/>Fireworks / Together / Predibase<br/>edge compresses 12–18mo/]
+    Q5 -- Yes --> Q6{6. Regulatory regime<br/>permits required DP ε?<br/>HIPAA: ε ≤ 0.5 not viable today}
+    Q6 -- No --> SingleTenant[/Single-tenant on-prem<br/>NeMo deployment<br/>no cross-client amortisation/]
+    Q6 -- Yes --> Q7{7. EU jurisdiction:<br/>modification compute<br/>< 1/3 of base training compute?}
+    Q7 -- No --> EUCompliance[/Stay below threshold OR<br/>budget GPAI provider<br/>obligations/]
+    Q7 -- Yes --> Q8{8. Operator accepts<br/>12–18 month durability window<br/>+ re-fine-tune cycle?}
+    Q8 -- No --> Halt[/Single-train assumption<br/>not supported by data<br/>do not proceed/]
+    Q8 -- Yes --> GO([Execute recipe<br/>GRPO + SFT-distillation +<br/>reliable LLM-judge +<br/>9-layer self-hosted inference])
+
+    style GO fill:#9f9,stroke:#393,stroke-width:3px
+    style API fill:#ffc,stroke:#960
+    style API_Plus fill:#ffc,stroke:#960
+    style Managed fill:#ffc,stroke:#960
+    style SingleTenant fill:#fcc,stroke:#900
+    style EUCompliance fill:#fcc,stroke:#900
+    style Halt fill:#fcc,stroke:#900

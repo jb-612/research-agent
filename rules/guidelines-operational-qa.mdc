@@ -1,0 +1,94 @@
+
+---
+description: Guidelines for BDD testing, synthetic data generation, and operational observability.
+globs: ["features/*.feature", "tests/**/*.py", "logs/*.json", "src/utils/logger.py"]
+---
+
+# Guidelines: QA & Operations
+
+## 1. Objective
+To ensure reliability and correctness through **Behavior-Driven Development (BDD)** and comprehensive **Operational Observability**. We do not test in production; we test against synthetic data that mirrors production.
+
+## 2. BDD Testing Strategy (Feature F7, F8)
+We use `behave` or `pytest-bdd` to define executable specifications.
+
+### 2.1 Feature File Structure
+All features from `BRD.md` must have a corresponding `.feature` file in `tests/features/`.
+
+**Example: `ingestion.feature`**
+```gherkin
+Feature: Weekly Ingestion Pipeline
+
+  Scenario: Ingest items within the 7-day window
+    Given a mock RSS feed with 5 items
+    And 3 items are dated within the last 7 days
+    And 2 items are older than 7 days
+    When the ingestion pipeline runs
+    Then 3 items should be stored in "raw_items.json"
+    And 2 items should be logged as "skipped_too_old"
+````
+
+### 2.2 Critical Scenarios
+
+You must implement BDD scenarios for:
+
+1.  **Ingestion:** Filtering logic (dates, language, duplicates).
+2.  **Summarization:** JSON Schema validation failure recovery.
+3.  **Governance:** The "Safety Gate" (e.g., "Given an unsafe item, When summarizer runs, Then safety\_flag is true").
+4.  **Delivery:** SMTP failure handling (ensure retries or graceful failure).
+
+## 3. Synthetic Test Data (Prompt Sec 15)
+
+Do not rely on live external RSS feeds for testing. Use **Synthetic Data**.
+
+### 3.1 `SyntheticItemGenerator`
+
+  * **Role:** Create deterministic JSON files simulating `raw_items.json` for edge cases.
+  * **Edge Cases to Mock:**
+      * **"The Empty Week":** 0 items found.
+      * **"The Flood":** 200 items found (test volume limits).
+      * **"The Garbage":** Malformed HTML or non-UTF8 characters.
+      * **"The Hype":** Text full of "revolutionary", "world-changing" (test Tone Critic).
+
+## 4. Operational Logging (NFR-4)
+
+Logs must be machine-readable (JSON-lines) to support future analytics.
+
+### 4.1 Log Schema
+
+```json
+{
+  "timestamp": "ISO8601",
+  "level": "INFO|WARN|ERROR",
+  "component": "Ingest|Summarize|Editor|Critic",
+  "run_id": "UUID",
+  "event": "item_processed",
+  "metadata": {
+    "item_id": "hash123",
+    "status": "success",
+    "duration_ms": 450
+  }
+}
+```
+
+### 4.2 Run Reports
+
+At the end of every weekly run, the system must generate a human-readable summary (`run_report.md`):
+
+  * **Status:** SUCCESS / FAILED / PARTIAL
+  * **Funnel:** Ingested (N) -\> Summarized (N) -\> Published (N).
+  * **Quality Signals:** Count of items flagged by Critics (Fact/Tone/Privacy).
+  * **Errors:** Top 3 error messages (if any).
+
+## 5. Deployment Checks
+
+Before deploying code changes:
+
+1.  **Lint:** `ruff check .` (Python).
+2.  **Schema Check:** Validate all `schemas/*.json` are valid Draft 2020-12 schemas.
+3.  **Prompt Diff:** If prompts changed, run `tests/test_prompts.py` (which runs the Synthetic Generator against the new prompt to check for JSON drift).
+
+<!-- end list -->
+
+```
+

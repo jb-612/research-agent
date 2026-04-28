@@ -1,0 +1,24 @@
+flowchart LR
+    subgraph Envelope ["Sweet-Spot Envelope (8 Joint Conditions)"]
+        direction TB
+        C1[Workload narrowness<br/>7B–32B specialist sufficient]
+        C2[Reward verifiability<br/>or judge reliability controls]
+        C3[Token volume<br/>≥50M/mo premium<br/>≥500M/mo mid-tier]
+        C4[Workflow stability<br/>≥12 months in scope]
+        C5[Inference-stack capability<br/>vLLM/SGLang/multi-LoRA]
+        C6[Regulatory regime fit<br/>ε ≥ 4 viable today]
+        C7[EU compute<br/>< 1/3 base training]
+        C8[12–18 month durability window<br/>re-fine-tune budgeted]
+    end
+
+    Inputs([Workload + Operator]) --> Envelope
+    Envelope --> Decision{All 8 satisfied?}
+    Decision -- Yes --> Recipe[Execute Recipe<br/>GRPO + SFT-distill +<br/>RULER + 9-layer inference]
+    Decision -- No --> Fallback[Frontier API + prompt<br/>engineering]
+
+    Recipe --> Outcomes[Break-even:<br/>50M tok/mo @ 7mo<br/>vs premium APIs<br/>500M tok/mo @ 14mo<br/>vs mid-tier APIs]
+
+    style Envelope fill:#eef
+    style Recipe fill:#9f9,stroke:#393
+    style Fallback fill:#ffc,stroke:#960
+    style Outcomes fill:#cef,stroke:#069

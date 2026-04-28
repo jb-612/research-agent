@@ -1,0 +1,18 @@
+flowchart TB
+    subgraph Stack ["9-Layer Inference Optimisation Stack — 5–8× compounding"]
+        L1[1. Model compression<br/>INT8 / INT4 / FP8<br/>GPTQ / AWQ / SmoothQuant<br/>Multi-LoRA]
+        L2[2. Attention & architecture<br/>FlashAttention<br/>PagedAttention<br/>MQA / GQA / MLA<br/>MLA: 93.3% KV reduction]
+        L3[3. Decoding<br/>Speculative<br/>Medusa / EAGLE-3 — 3–6.5×<br/>Lookahead / Constrained]
+        L4[4. KV cache<br/>Prefix caching<br/>Offload / Quantization<br/>SnapKV — 92% compression<br/>Attention sinks]
+        L5[5. Batching & scheduling<br/>Continuous batching — 85%<br/>Prefill–decode disaggregation<br/>SLO-aware / spot-aware]
+        L6[6. Parallelism & kernels<br/>TP / PP / EP / SP<br/>CUDA graphs<br/>Kernel fusion<br/>Torch compile]
+        L7[7. Application caching<br/>Prompt cache — 90% reduction<br/>Semantic / exact-match<br/>Embedding deflection<br/>Batch endpoints — 50%]
+        L8[8. I/O shaping<br/>LLMLingua — 20× compression<br/>Context pruning<br/>Output length caps<br/>RAG over long context]
+        L9[9. Routing & cost<br/>Model routing<br/>Cascading<br/>Multi-provider failover<br/>Function calling]
+    end
+
+    Naive[Naive FP16<br/>Inference] --> L1 --> L2 --> L3 --> L4 --> L5 --> L6 --> L7 --> L8 --> L9 --> Production[Production:<br/>$0.02–0.11/M tokens<br/>self-hosted floor]
+
+    style Stack fill:#eef
+    style Naive fill:#fcc,stroke:#900
+    style Production fill:#9f9,stroke:#393

@@ -1,0 +1,82 @@
+[
+  {
+    "query": "I want to figure out whether it's actually worth it for my startup to fine-tune our own model vs just keep wrapping GPT-4o. Need a real assessment, not a vibes call. Money is tight.",
+    "should_trigger": true
+  },
+  {
+    "query": "Run a deep evaluation on the ROI of doing RLHF on open-source models for a vertical SaaS. I want hypotheses tested, peer-reviewed sources, and a verdict on whether there's a sweet spot.",
+    "should_trigger": true
+  },
+  {
+    "query": "we keep going back and forth on this internally — is fine-tuning a llama 3 70B for our domain a strategic moat or a money pit? need a structured research project, not a one-pager",
+    "should_trigger": true
+  },
+  {
+    "query": "Use the rl-finetune-roi-research skill but swap the topic to: ROI of building proprietary RAG infrastructure vs using a managed vector DB. Same workflow, different subject.",
+    "should_trigger": true
+  },
+  {
+    "query": "I need a multi-phase research project on whether parameter-efficient fine-tuning (LoRA, QLoRA) actually moves the needle economically for B2B AI products. Adversarial review and verified citations matter.",
+    "should_trigger": true
+  },
+  {
+    "query": "Decision-criteria research: when does it pay off to invest in domain RL on a foundation model? I want hypotheses, deep dives, and an academic-grade output with a final PDF.",
+    "should_trigger": true
+  },
+  {
+    "query": "Board is asking for a position paper on whether we should keep our fine-tuning team or shut it down. Want the full structured research treatment with adversarial review.",
+    "should_trigger": true
+  },
+  {
+    "query": "Help me identify the sweet spot — minimum fine-tuning investment for maximum reasoning gains on our domain. Need peer-reviewed evidence, not blog posts.",
+    "should_trigger": true
+  },
+  {
+    "query": "do that big multi-phase research thing on whether owning your model actually pays off — the one with the hypotheses A through G, parallel agents, adversarial pass, all of it",
+    "should_trigger": true
+  },
+  {
+    "query": "We're a 12-person AI startup and our CTO keeps pushing to fine-tune. I'm CFO and want a real ROI analysis before we burn another quarter of runway on it. Multi-phase, with adversarial review.",
+    "should_trigger": true
+  },
+  {
+    "query": "Can you research the latest LoRA techniques and summarize the main approaches? Just a quick overview for a slack post.",
+    "should_trigger": false
+  },
+  {
+    "query": "Find me the top 5 recent papers on RLHF from NeurIPS 2024 and give me the abstracts.",
+    "should_trigger": false
+  },
+  {
+    "query": "What's a reasonable hourly rate for a contractor to fine-tune an open-source model? Just need a market range.",
+    "should_trigger": false
+  },
+  {
+    "query": "I need to fine-tune a llama model for a customer support classifier. Walk me through the steps.",
+    "should_trigger": false
+  },
+  {
+    "query": "Can you do some research on what AI21 Labs did wrong before they shut down their consumer products?",
+    "should_trigger": false
+  },
+  {
+    "query": "Look up GCP Vertex AI fine-tuning pricing and tell me what it would cost to fine-tune Gemini for our use case.",
+    "should_trigger": false
+  },
+  {
+    "query": "Write a competitive analysis of OpenAI vs Anthropic vs Google for enterprise AI deals.",
+    "should_trigger": false
+  },
+  {
+    "query": "Help me debug why my QLoRA fine-tune is OOM-ing on an A100.",
+    "should_trigger": false
+  },
+  {
+    "query": "Summarize the Chinchilla scaling paper for me.",
+    "should_trigger": false
+  },
+  {
+    "query": "I'm thinking about RLHF for our chatbot. What's the gist of how it works under the hood?",
+    "should_trigger": false
+  }
+]
